@@ -13,7 +13,7 @@ django.setup()
 import json
 from cores.constants import KIND_LIST_URL, KIND_DETAIL_URL
 from django.conf import settings
-from cores.util import get_redis, get_uniqueid
+from cores.util import get_redis, get_uniqueid, checkUrlValidate
 from cores.extractors import XPathExtractor, PythonExtractor, ImageExtractor, VideoExtractor
 import logging
 logger = logging.getLogger()
@@ -73,10 +73,14 @@ class Extractor(object):
         rules = data['detail_rules']
         for item in rules:
             col = item["key"]
-            print col
+            # print col
             col_rules = item["rules"]
             col_value = self.extract(content, col_rules, {'data': result})
             result[col] = col_value
+            print "====", "".join(col_value)
+            # list to string
+            if isinstance(col_value, list):
+                result[col] = '<br>'.join(col_value)
             # 提前检查多项详情新鲜度
             if col == 'url':
                 if data['detail_multi']:
@@ -137,8 +141,10 @@ class Extractor(object):
 
                 # 1.2后找下一页
                 next_urls = self.extract(body, data["next_url_rules"], {'data': data})
+                site_config = data['site_config']
                 print 'next_urls: %s' % next_urls
                 for item in next_urls:
+                    item = checkUrlValidate(item, site_config)
                     item_data = {
                         "url": item,
                         'kind': KIND_LIST_URL,

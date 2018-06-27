@@ -30,3 +30,14 @@ def get_link_from_url(url):
     elif isinstance(url, dict):
         return json.dumps(url)
 
+def checkUrlValidate(url, site_config):
+    """
+    检查是否以 “http(s)” 开头,
+    是否 “//” 开头
+    :param self:
+    :param url:
+    :return:
+    """
+    if not url.startswith('http') and not url.startswith("//"):
+        url = site_config['domain'] + url
+    return url
