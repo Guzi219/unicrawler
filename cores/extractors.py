@@ -7,6 +7,7 @@ import oss2
 from oss2.exceptions import NotFound
 from copy import copy
 from hashlib import md5
+from xml.etree import ElementTree
 from lxml import etree
 from io import StringIO
 from django.conf import settings
@@ -120,8 +121,12 @@ class VideoExtractor(BaseExtractor):
 
 class XPathExtractor(BaseExtractor):
     def __init__(self, content, rule):
-        htmlparser = etree.HTMLParser()
-        self.tree = etree.parse(StringIO(content), htmlparser)
+        # tree to string
+        if isinstance(content, etree._Element):
+            content = ElementTree.tostring(content, encoding='utf-8', method='html')
+
+        htmlparser = etree.HTMLParser(remove_comments=True)
+        self.tree = etree.parse(StringIO(unicode(content)), htmlparser)
         self.rule = rule
 
     def extract(self):
