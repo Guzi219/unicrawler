@@ -1,3 +1,10 @@
+# win下使用
+```
+# firefox 32bit 58.0.1
+url = http://ftp.mozilla.org/pub/firefox/releases/58.0.1/win32/zh-CN/
+# selenium 3.7.0
+# geckodriver-v0.20.0-win64.zip
+```
 # unicrawler
 一个通用的 可配置的 分布式的爬虫
 
