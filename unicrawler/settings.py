@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'unicrawler.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': '127.0.0.1',
+        'HOST': '192.168.0.169',
         'NAME': 'unicrawler',
         'USER': 'root',
         'PASSWORD': '123456',
@@ -114,7 +114,7 @@ USE_TZ = False
 STATIC_URL = '/static/'
 
 REDIS_OPTIONS = {
-    'host': 'localhost',
+    'host': '192.168.0.169',
     'port': 6379,
     'password': '',
     'db': 3
