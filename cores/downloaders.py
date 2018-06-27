@@ -40,14 +40,25 @@ class RequestsDownloaderBackend(object):
         else:
             return None
 
-    def download(self, url):
+    def defaultcoding(self, coding, defautCoding='UTF-8'):
+        """
+        如果是ISO开头的转为默认编码UTF8
+        防止中文乱码
+        """
+        if str(coding).upper().startswith("ISO"):
+            return defautCoding
+        return coding
+
+    def download(self, url, encoding='UTF-8'):
         header = sample(self.headers, 1)[0]
         proxies = self.format_proxies()
-        #print url
+        print 'url: ', url
         if isinstance(url, basestring):
             rsp = requests.get(url, headers=header, proxies=proxies)
             rsp.close()
-            rsp.encoding = rsp.apparent_encoding
+            rsp.encoding = self.defaultcoding(rsp.apparent_encoding)
+            print ('encoding :' + rsp.encoding)
+
             return rsp.text
         elif isinstance(url, dict):
             link, method, data, data_type = url.get('url'), url.get('method'), url.get('data'), url.get('dataType')
@@ -57,7 +68,8 @@ class RequestsDownloaderBackend(object):
             elif method == 'POST':
                 rsp = req(link, data=data, headers=header, proxies=proxies)
             rsp.close()
-            rsp.encoding = rsp.apparent_encoding
+            rsp.encoding = self.defaultcoding(rsp.apparent_encoding)
+            print ('encoding :' + rsp.encoding)
             if data_type == 'json':
                 return rsp.json()
             else:
@@ -101,8 +113,8 @@ class SeleniumDownloaderBackend(object):
             logging.exception(e)
 
     def get_display(self):
-        if platform.system() != 'Darwin':
-            # 不是mac系统, 启动窗口
+        if platform.system() != 'Darwin' and platform.system() != 'Windows':
+            # 不是mac/win系统, 启动窗口
             display = Display(visible=0, size=(1024, 768))
             display.start()
         else:
