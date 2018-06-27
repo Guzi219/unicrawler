@@ -65,15 +65,18 @@ class MysqlBackend(BaseProcessorBackend):
             # try update
             affected = self.update(data, {'uniqueid': data['uniqueid']})
             if affected == 0:
-                # row not exists, try create
                 data['create_time'] = str(datetime.now())
                 self.create(data)
+            else:
+                print 'update %s rows = %s' %(affected, data['link'])
         except Exception as e:
             logger.exception(e)
         finally:
-            logger.debug(data['url'])
+            pass
+            # logger.debug(data['url'])
 
     def create(self, params):
+        print ('create' + params['link'])
         keys = params.keys()
         values = params.values()
         cols = ','.join(map(lambda s:str(s), keys))
@@ -93,6 +96,7 @@ class MysqlBackend(BaseProcessorBackend):
             where_placeholder = ', '.join(['`'+item+'`=%s' for item in where_keys])
             sql = sql + ' WHERE ' + where_placeholder
             values += where_values
+        # print sql, values
         return self.db.update(sql, *values)
 
     @staticmethod
@@ -149,7 +153,7 @@ class DjangoModelBackend(BaseProcessorBackend):
         except Exception as e:
             logger.exception(e)
         finally:
-            logger.debug(data['url'])
+            logger.debug(data['link'])
 
 
 
