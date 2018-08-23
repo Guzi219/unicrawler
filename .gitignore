@@ -1,4 +1,4 @@
-.idea
+.idea/
 *.pyc
 logs
 local_settings.py

@@ -11,6 +11,7 @@ from xml.etree import ElementTree
 from lxml import etree
 from io import StringIO
 from django.conf import settings
+from bs4 import BeautifulSoup
 import logging
 logger = logging.getLogger()
 
@@ -66,6 +67,8 @@ class ImageExtractor(BaseExtractor):
         d = self.data
         res = None
         if not d:
+            return d
+        if not settings.OSS2_ENABLE:
             return d
         elif isinstance(d, basestring):
             if d.startswith('http'):
@@ -150,3 +153,11 @@ class PythonExtractor(BaseExtractor):
             logger.exception(e)
         finally:
             return res
+
+class RegexExtractor(BaseExtractor):
+    def __init__(self):
+        pass
+
+    def extract(self):
+        pass
+

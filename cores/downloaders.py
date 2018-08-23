@@ -145,6 +145,10 @@ class SeleniumDownloaderBackend(object):
         return browser
 
     def download(self, url):
+        #url isisntance of dict
+        if isinstance(url, dict):
+            url = url.get('url')
+
         browser = self.browser
         # 访问首页, 输入wchatid, 点击查询
         browser.get(url)
